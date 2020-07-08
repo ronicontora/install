@@ -1,0 +1,33 @@
+TEMP_DEB="$(mktemp)" &&
+wget -O "$TEMP_DEB" 'https://products.s.kaspersky-labs.com/endpoints/keslinux10/11.1.0.3013/multilanguage-INT-11.1.0.3013/3330333430367c44454c7c31/klnagent64_11.0.0-38_amd64.deb' &&
+dpkg -i "$TEMP_DEB"
+rm -f "$TEMP_DEB"
+
+cat > /tmp/klnagentautoinstall.ini <<EOF
+KLNAGENT_SERVER=cdc-ksc-01.sibintek.ru
+KLNAGENT_AUTOINSTALL=1
+KLNAGENT_GW_MODE=2
+EOF
+
+export KLAUTOANSWERS=/tmp/klnagentautoinstall.ini
+/opt/kaspersky/klnagent64/lib/bin/setup/postinstall.pl
+
+TEMP_DEB="$(mktemp)" &&
+wget -O "$TEMP_DEB" 'https://products.s.kaspersky-labs.com/endpoints/keslinux10/11.1.0.3013/multilanguage-INT-11.1.0.3013/3330333430317c44454c7c31/kesl_11.1.0-3013_amd64.deb' &&
+dpkg -i "$TEMP_DEB"
+rm -f "$TEMP_DEB"
+
+cat > /tmp/keslautoinstall.ini <<EOF
+EULA_AGREED=Yes
+PRIVACY_POLICY_AGREED=Yes
+USE_KSN=Yes
+# SERVICE_LOCALE=C
+# INSTALL_LICENSE=
+UPDATER_SOURCE=SCServer
+# PROXY_SERVER=
+UPDATE_EXECUTE=No
+KERNEL_SRCS_INSTALL=Yes
+USE_GUI=No
+EOF
+
+/opt/kaspersky/kesl/bin/kesl-setup.pl --autoinstall=/tmp/keslautoinstall.ini
